@@ -36,7 +36,7 @@ public class solver042 {
         if (cardCopies.size() < cardNumber+1){
             cardCopies.add(1);
         }
-        int currentMultiplier = cardCopies.get(cardNumber);
+        int currentCardCopies = cardCopies.get(cardNumber);
 
         Matcher winningNumberMatcher = numberPattern.matcher(line).region(startOfWinningRange, line.length());
         while (winningNumberMatcher.find()) {
@@ -55,9 +55,9 @@ public class solver042 {
             if (cardCopies.size() < additionalCardIndex+1){
                 //Adds the upcoming card to the list of copies
                 //We get one copy of every card by default, and having matching numbers gives additional copies of cards
-                cardCopies.add(currentMultiplier+1);
+                cardCopies.add(currentCardCopies+1);
             }else{
-                cardCopies.set(additionalCardIndex, cardCopies.get(additionalCardIndex)+currentMultiplier);
+                cardCopies.set(additionalCardIndex, cardCopies.get(additionalCardIndex)+currentCardCopies);
             }
         }
     }
