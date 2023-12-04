@@ -3,7 +3,6 @@ package com.brynnperit.aoc2023;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -37,12 +36,7 @@ public class solver012 {
         }
         return returnDigit;
     }
-    public static void main(String[] args) {
-        int total = 0;
-
-        ToIntFunction<String> processorFunction = new ToIntFunction<>() {
-            @Override
-            public int applyAsInt(String inputLine) {
+    static int processorFunction(String inputLine) {
                 int firstDigit = 0;
                 int lastDigit = 0;
                 Matcher filterMatcher = filterPattern.matcher(inputLine);
@@ -58,10 +52,11 @@ public class solver012 {
                 lineCount++;
                 return returnValue;
             }
-        };
+    public static void main(String[] args) {
+        int total = 0;
 
         try (Stream<String> inputLines = Files.lines(new File("inputs/input_01").toPath())) {
-            total = inputLines.mapToInt(processorFunction).sum();
+            total = inputLines.mapToInt(solver012::processorFunction).sum();
         } catch (IOException e) {
             e.printStackTrace();
         }
