@@ -9,13 +9,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class solver031 {
-    static Pattern numberPattern = Pattern.compile("([0-9]+)");
-    static Pattern symbolPattern = Pattern.compile("[^0-9.]");
+    private static Pattern numberPattern = Pattern.compile("([0-9]+)");
+    private static Pattern symbolPattern = Pattern.compile("[^0-9.]");
 
-    static String[] lines = new String[3];
-    static List<String> validNumberStrings = new ArrayList<>();
+    private static String[] lines = new String[3];
+    private static List<String> validNumberStrings = new ArrayList<>();
 
-    static void checkLine(String nextLine){
+    private static void checkLine(String nextLine){
         lines[0]=lines[1];
         lines[1]=lines[2];
         lines[2]=nextLine;

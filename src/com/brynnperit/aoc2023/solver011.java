@@ -8,17 +8,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class solver011 {
-    static int lineCount = 0;
+    private static int lineCount = 0;
     // Oh whoops, turns out words shouldn't be turned into digits. I guess that's a
     // problem in other languages. *EDIT* no that's just day 1 part 2
     // static Pattern filterPattern =
     // Pattern.compile("([0-9]|one|two|three|four|five|six|seven|eight|nine|zero)");
-    static Pattern filterPattern = Pattern.compile("([0-9])");
+    private static Pattern filterPattern = Pattern.compile("([0-9])");
 
     /**
      * This isn't actually needed or used!
      */
-    static enum digits {
+    private static enum digits {
         one(1),
         two(2),
         three(3),
@@ -41,7 +41,7 @@ public class solver011 {
         }
     }
 
-    static int getDigit(String getDigitFrom) {
+    private static int getDigit(String getDigitFrom) {
         int returnDigit = Integer.MAX_VALUE;
         if (getDigitFrom.length() > 1) {
             // This line can't be reached!
@@ -52,7 +52,7 @@ public class solver011 {
         return returnDigit;
     }
 
-    static int processorFunction(String inputLine) {
+    private static int processorFunction(String inputLine) {
         int firstDigit = 0;
         int lastDigit = 0;
         Matcher filterMatcher = filterPattern.matcher(inputLine);

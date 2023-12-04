@@ -13,7 +13,7 @@ public class solver041 {
     static Pattern startPossessedRangePattern = Pattern.compile(":");
     static Pattern startWinningRangePattern = Pattern.compile("\\|");
 
-    static int countWinningNumbers(String line) {
+    private static int countWinningNumbers(String line) {
         int winningNumbersCount = 0;
         Set<Integer> winningNumbers = new TreeSet<>();
 

@@ -8,10 +8,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class solver012 {
-    static int lineCount = 0;
-    static Pattern filterPattern = Pattern.compile("([0-9]|one|two|three|four|five|six|seven|eight|nine)");
+    private static int lineCount = 0;
+    private static Pattern filterPattern = Pattern.compile("([0-9]|one|two|three|four|five|six|seven|eight|nine)");
 
-    static enum digits{
+    private static enum digits{
         one(1),
         two(2),
         three(3),
@@ -27,7 +27,7 @@ public class solver012 {
         }
         public int getDigit(){return digit;}
     }
-    static int getDigit(String getDigitFrom){
+    private static int getDigit(String getDigitFrom){
         int returnDigit = Integer.MAX_VALUE;
         if (getDigitFrom.length() > 1){
             returnDigit = digits.valueOf(getDigitFrom).getDigit();
@@ -36,7 +36,7 @@ public class solver012 {
         }
         return returnDigit;
     }
-    static int processorFunction(String inputLine) {
+    private static int processorFunction(String inputLine) {
                 int firstDigit = 0;
                 int lastDigit = 0;
                 Matcher filterMatcher = filterPattern.matcher(inputLine);

@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class solver021 {
-    static Pattern gameIDPattern = Pattern.compile("(?:(Game ))([0-9]+)");
-    static Pattern revealPattern = Pattern.compile("(([0-9]+) (red|blue|green), )*(([0-9]+) (red|blue|green);?)");
-    static Pattern subRevealPattern = Pattern.compile("([0-9]+) (red|blue|green)");
+    private static Pattern gameIDPattern = Pattern.compile("(?:(Game ))([0-9]+)");
+    private static Pattern revealPattern = Pattern.compile("(([0-9]+) (red|blue|green), )*(([0-9]+) (red|blue|green);?)");
+    private static Pattern subRevealPattern = Pattern.compile("([0-9]+) (red|blue|green)");
 
-    static enum cubes {
+    private static enum cubes {
         red(12),
         green(13),
         blue(14);
@@ -28,14 +28,14 @@ public class solver021 {
         }
     }
 
-    static int gameIdFinderFunction(String inputLine) {
+    private static int gameIdFinderFunction(String inputLine) {
         Matcher filterMatcher = gameIDPattern.matcher(inputLine);
         filterMatcher.find();
         int gameNumber = Integer.parseInt(filterMatcher.group(2));
         return gameNumber;
     }
 
-    static boolean filterValidGamesFunction(String toTest) {
+    private static boolean filterValidGamesFunction(String toTest) {
         Matcher filterMatcher = revealPattern.matcher(toTest);
         while (filterMatcher.find()) {
             String reveal = filterMatcher.group();

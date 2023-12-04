@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class solver022 {
-    static Pattern subRevealPattern = Pattern.compile("([0-9]+) (red|blue|green)");
+    private static Pattern subRevealPattern = Pattern.compile("([0-9]+) (red|blue|green)");
 
-    static enum cubes {
+    private static enum cubes {
         red,
         green,
         blue;
     }
 
-    static int toPowerSetFunction(String inputLine) {
+    private static int toPowerSetFunction(String inputLine) {
         Matcher subRevealMatcher = subRevealPattern.matcher(inputLine);
         Map<cubes, Integer> cubeCounter = new HashMap<>();
         for (cubes cube : cubes.values()) {

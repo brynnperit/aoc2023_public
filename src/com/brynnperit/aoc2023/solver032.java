@@ -9,15 +9,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class solver032 {
-    static Pattern numberPattern = Pattern.compile("([0-9]+)");
-    static Pattern gearPattern = Pattern.compile("\\*");
+    private static Pattern numberPattern = Pattern.compile("([0-9]+)");
+    private static Pattern gearPattern = Pattern.compile("\\*");
 
-    static String[] lines = new String[3];
-    static List<Gear> validGears = new ArrayList<>();
+    private static String[] lines = new String[3];
+    private static List<Gear> validGears = new ArrayList<>();
 
-    record Gear(int num1, int num2){};
+    private record Gear(int num1, int num2){};
 
-    static void checkLine(String nextLine){
+    private static void checkLine(String nextLine){
         lines[0]=lines[1];
         lines[1]=lines[2];
         lines[2]=nextLine;
