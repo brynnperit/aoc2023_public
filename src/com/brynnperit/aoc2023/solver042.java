@@ -65,7 +65,7 @@ public class solver042 {
     public static void main(String[] args) {
         int total = 0;
         try (Stream<String> inputLines = Files.lines(new File("inputs/input_04").toPath())) {
-            inputLines.forEach(solver042::calculateCardCopies);
+            inputLines.forEachOrdered(solver042::calculateCardCopies);
             total = cardCopies.stream().mapToInt(i->i).sum();
 
         } catch (IOException e) {
