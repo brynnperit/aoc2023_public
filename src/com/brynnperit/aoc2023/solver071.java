@@ -31,19 +31,12 @@ public class solver071 {
         cK,
         cA;
 
-        private static final Map<Card, String> enumToString = Stream.of(values())
-                .collect(Collectors.toMap(c -> c, c -> c.toString().substring(1)));
-
-        private static final Map<String, Card> stringToEnum = Stream.of(values()).collect(Collectors.toMap(c -> c.toString().substring(1), c -> c));
+        private static final Map<String, Card> stringToEnum = Stream.of(values())
+                .collect(Collectors.toMap(c -> c.toString().substring(1), c -> c));
 
         public static Optional<Card> fromString(String symbol) {
             return Optional.ofNullable(stringToEnum.get(symbol));
         }
-
-        // @Override
-        // public String toString() {
-        //     return enumToString.get(this);
-        // }
     }
 
     private enum CardHandType {
@@ -89,8 +82,8 @@ public class solver071 {
         public static Optional<CardHandType> getCardHandType(CardHand cardsInHand) {
             CardHandType toReturn = null;
             Map<Card, Integer> cardCounts = cardsInHand.cardCounts();
-            for (CardHandType handType : CardHandType.values()){
-                if (handType.handMatchesType(cardCounts)){
+            for (CardHandType handType : CardHandType.values()) {
+                if (handType.handMatchesType(cardCounts)) {
                     toReturn = handType;
                     break;
                 }
@@ -101,17 +94,14 @@ public class solver071 {
         protected abstract boolean handMatchesType(Map<Card, Integer> cardCounts);
     }
 
-    private record CardHand(List<Card> cards, long bid, Map<Card, Integer> cardCounts, CardHandType cardHandType) implements Comparable<CardHand> {
+    private record CardHand(List<Card> cards, long bid, Map<Card, Integer> cardCounts, CardHandType cardHandType)
+            implements Comparable<CardHand> {
 
-        public List<Card> cards(){
-            return Collections.unmodifiableList(cards);
-        }
-
-        public Map<Card,Integer> cardCounts(){
+        public Map<Card, Integer> cardCounts() {
             return Collections.unmodifiableMap(cardCounts);
         }
 
-        private CardHand(List<Card> cards, long bid, Map<Card, Integer> cardCounts, CardHandType cardHandType){
+        private CardHand(List<Card> cards, long bid, Map<Card, Integer> cardCounts, CardHandType cardHandType) {
             this.cards = List.copyOf(cards);
             this.bid = bid;
             this.cardCounts = new EnumMap<>(Card.class);
@@ -125,20 +115,20 @@ public class solver071 {
             this.cardHandType = CardHandType.getCardHandType(this).get();
         }
 
-        public CardHand(List<Card> cards, long bid){
+        public CardHand(List<Card> cards, long bid) {
             this(List.copyOf(cards), bid, null, null);
         }
 
         @Override
         public int compareTo(CardHand arg0) {
             int compareValue = this.cardHandType.compareTo(arg0.cardHandType);
-            if (compareValue == 0){
+            if (compareValue == 0) {
                 Iterator<Card> ourCardIterator = cards.iterator();
                 Iterator<Card> otherCardIterator = arg0.cards.iterator();
-                while(compareValue == 0 && ourCardIterator.hasNext() && otherCardIterator.hasNext()){
+                while (compareValue == 0 && ourCardIterator.hasNext() && otherCardIterator.hasNext()) {
                     compareValue = ourCardIterator.next().compareTo(otherCardIterator.next());
                 }
-                if (compareValue == 0){
+                if (compareValue == 0) {
                     compareValue = Long.compare(bid, arg0.bid);
                 }
             }
@@ -152,18 +142,21 @@ public class solver071 {
         handPatternMatcher.find();
         numberPatternMatcher.find();
         Matcher cardMatcher = cardPattern.matcher(handPatternMatcher.group());
-        List<Card> cards = cardMatcher.results().map(i->i.group()).map(Card::fromString).map(i->i.get()).toList();
+        List<Card> cards = cardMatcher.results().map(i -> i.group()).map(Card::fromString).map(i -> i.get()).toList();
         hands.add(new CardHand(cards, Long.parseLong(numberPatternMatcher.group())));
     }
 
-    private record rankAndBid(int rank, long bid){};
+    private record rankAndBid(int rank, long bid) {
+    };
 
     public static void main(String[] args) {
         long totalWinnings = -1;
         try (Stream<String> inputLines = Files.lines(new File("inputs/input_07").toPath())) {
             inputLines.forEach(solver071::processInputLine);
             List<CardHand> CardHandsInOrder = hands.stream().toList();
-            totalWinnings = IntStream.range(1, CardHandsInOrder.size()+1).mapToObj(i->new rankAndBid(i, CardHandsInOrder.get(i-1).bid())).mapToLong(r->r.bid*r.rank).sum();
+            totalWinnings = IntStream.range(1, CardHandsInOrder.size() + 1)
+                    .mapToObj(i -> new rankAndBid(i, CardHandsInOrder.get(i - 1).bid())).mapToLong(r -> r.bid * r.rank)
+                    .sum();
         } catch (IOException e) {
             e.printStackTrace();
         }
