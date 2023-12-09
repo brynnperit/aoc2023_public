@@ -63,45 +63,53 @@ public class solver082 {
             return isEndingNode;
         }
 
-        public String getLabel(){
+        public String getLabel() {
             return label;
         }
 
-        public Node followInstructions(Collection<Instruction> instructionsToFollow, Set<NodeFinishedStep> finishedSteps, long initialStepNumber) {
+        public Node followInstructions(Collection<Instruction> instructionsToFollow,
+                Set<NodeFinishedStep> finishedSteps, long initialStepNumber) {
             Iterator<Instruction> instructionIterator = instructionsToFollow.iterator();
-            return instructionIterator.next().followInstructionList(instructionIterator, this, finishedSteps, initialStepNumber);
+            return instructionIterator.next().followInstructionList(instructionIterator, this, finishedSteps,
+                    initialStepNumber);
         }
     }
 
     private enum Instruction {
         L() {
-            public Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode, Set<NodeFinishedStep> finishedSteps, long stepNumber) {
-                addNodeToFinishedSetIfFinished(currentNode,finishedSteps, stepNumber);
-                if (instructionListIterator.hasNext()) {
-                    return instructionListIterator.next().followInstructionList(instructionListIterator,
-                            currentNode.getLeft(), finishedSteps, stepNumber++);
-                } else {
-                    return currentNode.getLeft();
-                }
+            public Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode,
+                    Set<NodeFinishedStep> finishedSteps, long stepNumber) {
+                return instructionListFollower(instructionListIterator, currentNode, currentNode.getLeft(),
+                        finishedSteps, stepNumber);
             }
         },
         R() {
-            public Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode, Set<NodeFinishedStep> finishedSteps, long stepNumber) {
-                addNodeToFinishedSetIfFinished(currentNode,finishedSteps, stepNumber);
-                if (instructionListIterator.hasNext()) {
-                    return instructionListIterator.next().followInstructionList(instructionListIterator,
-                            currentNode.getRight(), finishedSteps, stepNumber++);
-                } else {
-                    return currentNode.getRight();
-                }
+            public Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode,
+                    Set<NodeFinishedStep> finishedSteps, long stepNumber) {
+                return instructionListFollower(instructionListIterator, currentNode, currentNode.getRight(),
+                        finishedSteps, stepNumber);
             }
         };
 
-        public abstract Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode, Set<NodeFinishedStep> finishedSteps, long stepNumber);
+        public abstract Node followInstructionList(Iterator<Instruction> instructionListIterator, Node currentNode,
+                Set<NodeFinishedStep> finishedSteps, long stepNumber);
 
-        public static void addNodeToFinishedSetIfFinished(Node possiblyFinishedNode, Set<NodeFinishedStep> finishedSteps, long stepNumber){
-            if (possiblyFinishedNode.isEndingNode()){
+        private static void addNodeToFinishedSetIfFinished(Node possiblyFinishedNode,
+                Set<NodeFinishedStep> finishedSteps, long stepNumber) {
+            if (possiblyFinishedNode.isEndingNode()) {
                 finishedSteps.add(new NodeFinishedStep(possiblyFinishedNode, stepNumber));
+            }
+        }
+
+        private static Node instructionListFollower(Iterator<Instruction> instructionListIterator, Node currentNode,
+                Node nextNode, Set<NodeFinishedStep> finishedSteps, long stepNumber) {
+            addNodeToFinishedSetIfFinished(currentNode, finishedSteps, stepNumber);
+            if (instructionListIterator.hasNext()) {
+
+                return instructionListIterator.next().followInstructionList(instructionListIterator,
+                        nextNode, finishedSteps, stepNumber+1);
+            } else {
+                return nextNode;
             }
         }
     }
@@ -149,40 +157,44 @@ public class solver082 {
         }
     }
 
-    protected record NodeFinishedStep(Node node, long step){};
+    protected record NodeFinishedStep(Node node, long step) {
+    };
 
     private static boolean hasSolution(Map<Integer, Set<NodeFinishedStep>> finishedNodeSteps) {
-        boolean allSetsHaveEntries = finishedNodeSteps.values().stream().map(set->!set.isEmpty()).reduce(true, (a,b)->a&&b);
-        if (allSetsHaveEntries){
-            return true;
-        }
-        return false;//nodesToCheck.stream().map(n -> n.isEndingNode()).reduce(true, (a, b) -> a && b);
+        boolean allSetsComplete = finishedNodeSteps.values().stream().map(set -> set.stream().filter(nfs->nfs.step()%instructionList.size()==0).count()>0).reduce(true,
+                (a, b) -> a && b);
+        return allSetsComplete;
     }
 
-    private static long getSolution(Map<Integer, Set<NodeFinishedStep>> finishedNodeSteps){
-        return finishedNodeSteps.values().stream().mapToLong(set->set.stream().map(n->n.step()).reduce(Long.MAX_VALUE, (a,b) -> a < b ? a : b)).reduce(1, (a,b)->a*b);
+    private static long getSolution(Map<Integer, Set<NodeFinishedStep>> finishedNodeSteps) {
+        List<Long> stepCounts = finishedNodeSteps.values().stream().mapToLong(set -> set.stream().mapToLong(n -> n.step()).min().orElse(-1)).mapToObj(l->l).toList();
+        return stepCounts.stream().mapToLong(i->i).map(i->i/instructionList.size()).reduce(1, (a,b)->a*b)*instructionList.size();
     }
 
     public static void main(String[] args) {
         long totalSteps = -1;
         try (Stream<String> inputLines = Files.lines(new File("inputs/input_08").toPath())) {
             inputLines.forEach(solver082::processInputLine);
-
+            //System.out.println("There are " + instructionList.size() + " instructions");
             long totalLoops = 0;
             Map<Integer, Set<NodeFinishedStep>> finishedNodeSteps = new TreeMap<>();
-            for (int nodeIndex = 0; nodeIndex < startNodes.size(); nodeIndex++){
+            for (int nodeIndex = 0; nodeIndex < startNodes.size(); nodeIndex++) {
                 finishedNodeSteps.put(nodeIndex, new HashSet<>());
             }
             List<Node> currentNodes = startNodes;
-            
+
             while (!hasSolution(finishedNodeSteps)) {
-                totalLoops++;
                 final List<Node> currentNodesCopy = List.copyOf(currentNodes);
                 final long totalLoopsCopy = totalLoops;
-                currentNodes = IntStream.range(0, currentNodes.size()).mapToObj(i->currentNodesCopy.get(i).followInstructions(instructionList, finishedNodeSteps.get(i), totalLoopsCopy*instructionList.size())).collect(Collectors.toList());
+                currentNodes = IntStream.range(0, currentNodes.size())
+                        .mapToObj(i -> currentNodesCopy.get(i).followInstructions(instructionList,
+                                finishedNodeSteps.get(i), totalLoopsCopy * instructionList.size()))
+                        .collect(Collectors.toList());
+                totalLoops++;
             }
+            //finishedNodeSteps.values().stream().forEach(i->{System.out.println("node----");i.stream().forEach(j->System.out.println("Steps: "+ j.step()+", on cycle "+j.step()/instructionList.size()+" with remainder " + j.step()%instructionList.size()));});
             totalSteps = getSolution(finishedNodeSteps);
-            //totalSteps 
+            // totalSteps
         } catch (IOException e) {
             e.printStackTrace();
         }
