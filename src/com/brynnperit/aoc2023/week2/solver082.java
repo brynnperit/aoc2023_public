@@ -63,6 +63,7 @@ public class solver082 {
             return isEndingNode;
         }
 
+        @SuppressWarnings("unused")
         public String getLabel() {
             return label;
         }
