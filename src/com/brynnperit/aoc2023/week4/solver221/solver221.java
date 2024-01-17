@@ -14,7 +14,10 @@ public class solver221 {
             lines.forEachOrdered(s->pile.addBrick(s));
             Set<RectangularPrism> removableBricks = pile.getRemovableBricks();
             bricksRemovable = removableBricks.size();
+            // long before = System.nanoTime();
             bricksThatWouldFall = pile.getNumberOfBricksThatWouldFall();
+            // long after = System.nanoTime();
+            // System.out.printf("%d,%d,%d%n",before,after,after-before);
             // System.out.println(removableBricks);
         }catch (IOException e){
             e.printStackTrace();

@@ -141,17 +141,15 @@ public class PileNode {
     }
 
     private void cascadingFall(Set<PileNode> fallingNodes) {
-        if (!fallingNodes.containsAll(children)) {
-            List<PileNode> fallingChildren = new ArrayList<>();
-            for (PileNode child : children) {
-                if (child.testFalling(fallingNodes)) {
-                    fallingNodes.add(child);
-                    fallingChildren.add(child);
-                }
+        List<PileNode> fallingChildren = new ArrayList<>();
+        for (PileNode child : children) {
+            if (!fallingNodes.contains(child) && child.testFalling(fallingNodes)) {
+                fallingNodes.add(child);
+                fallingChildren.add(child);
             }
-            for (PileNode child : fallingChildren) {
-                child.cascadingFall(fallingNodes);
-            }
+        }
+        for (PileNode child : fallingChildren) {
+            child.cascadingFall(fallingNodes);
         }
     }
 
