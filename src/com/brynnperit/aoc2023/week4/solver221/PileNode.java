@@ -132,7 +132,7 @@ public class PileNode {
         Set<PileNode> fallingNodes = new HashSet<>();
         fallingNodes.add(this);
         cascadingFall(fallingNodes);
-        visitedNodes.put(this, fallingNodes.size()-1);
+        visitedNodes.put(this, fallingNodes.size() - 1);
         for (PileNode child : children) {
             if (!visitedNodes.containsKey(child)) {
                 child.getBricksFalling(visitedNodes);
@@ -141,15 +141,17 @@ public class PileNode {
     }
 
     private void cascadingFall(Set<PileNode> fallingNodes) {
-        List<PileNode> fallingChildren = new ArrayList<>();
-        for (PileNode child : children) {
-            if (child.testFalling(fallingNodes)) {
-                fallingNodes.add(child);
-                fallingChildren.add(child);
+        if (!fallingNodes.containsAll(children)) {
+            List<PileNode> fallingChildren = new ArrayList<>();
+            for (PileNode child : children) {
+                if (child.testFalling(fallingNodes)) {
+                    fallingNodes.add(child);
+                    fallingChildren.add(child);
+                }
             }
-        }
-        for (PileNode child : fallingChildren) {
-            child.cascadingFall(fallingNodes);
+            for (PileNode child : fallingChildren) {
+                child.cascadingFall(fallingNodes);
+            }
         }
     }
 
