@@ -1,7 +1,7 @@
 package com.brynnperit.aoc2023.week4.solver231;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.*;
 
 public class HikingGrid {
     final private List<List<HikingGridTile>> grid = new ArrayList<>();
@@ -19,23 +19,17 @@ public class HikingGrid {
     }
 
     public long getLongestPathLength(boolean respectSteepSlopes) {
-        long longestPathLength = 0;
         processPaths();
         NavigableMap<Coord2D, PathNode> nodeMap = nodeSets.get(respectSteepSlopes);
         PathNode startNode = nodeMap.get(getStartPosition());
         PathNode endNode = nodeMap.get(getEndPosition());
-        ConcurrentLinkedQueue<NodeExplorer> nodeExplorers = new ConcurrentLinkedQueue<NodeExplorer>();
-        nodeExplorers.add(new NodeExplorer(startNode));
-        while (!nodeExplorers.isEmpty()) {
-            List<NodeExplorer> explorers = nodeExplorers.stream().toList();
-            nodeExplorers.clear();
-            longestPathLength = Math.max(longestPathLength, explorers.stream().parallel().mapToLong(ne -> exploreUntilEnd(ne, nodeExplorers, endNode)).max().orElse(-1));
-        }
-        return longestPathLength;
+        return exploreUntilEnd(new NodeExplorer(startNode),endNode,true);
     }
 
-    private long exploreUntilEnd(NodeExplorer currentExplorer, ConcurrentLinkedQueue<NodeExplorer> nodeExplorers, PathNode endNode) {
+    private long exploreUntilEnd(NodeExplorer currentExplorer, PathNode endNode, boolean parallel) {
         PathNode currentNode = currentExplorer.currentNode();
+        List<NodeExplorer> additionalExplorers = new ArrayList<>();
+        boolean failedToFindExit = false;
         while (!currentNode.equals(endNode)) {
             Iterator<PathNode> nodeIterator = currentNode.getConnectedNodes().iterator();
             PathNode firstNextNode = null;
@@ -47,17 +41,26 @@ public class HikingGrid {
                 if (!currentExplorer.hasVisited(nextNode)) {
                     NodeExplorer nextExplorer = new NodeExplorer(currentExplorer);
                     nextExplorer.visit(nextNode);
-                    nodeExplorers.add(nextExplorer);
+                    additionalExplorers.add(nextExplorer);
                 }
             }
             if (!currentExplorer.hasVisited(firstNextNode)) {
                 currentExplorer.visit(firstNextNode);
             }else{
-                return -1;
+                failedToFindExit = true;
+                break;
             }
             currentNode = currentExplorer.currentNode();
         }
-        return currentExplorer.lengthTravelled();
+        Stream<NodeExplorer> explorerStream = additionalExplorers.stream();
+        if (parallel){
+            explorerStream.parallel();
+        }
+        long distance = currentExplorer.lengthTravelled();
+        if (failedToFindExit){
+            distance = -1;
+        }
+        return Math.max(distance,explorerStream.mapToLong(ne->exploreUntilEnd(ne, endNode, true)).max().orElse(-1));
     }
 
     private void processPaths() {
