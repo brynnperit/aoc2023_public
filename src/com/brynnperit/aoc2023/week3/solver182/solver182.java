@@ -8,7 +8,7 @@ import java.util.stream.*;
 public class solver182 {
     public static void main(String[] args) {
         long lagoonSize = -1;
-        try (Stream<String> lines = Files.lines(new File("inputs/input_18").toPath())) {
+        try (Stream<String> lines = Files.lines(new File("inputs/week3/input_18").toPath())) {
             EdgeCollection edges = new EdgeCollection();
             lines.forEachOrdered(line -> edges.addEdge(line));
             // System.out.println(grid);

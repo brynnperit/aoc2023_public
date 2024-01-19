@@ -221,7 +221,7 @@ public class solver141 {
 
     public static void main(String[] args) {
         long totalLoad = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_14").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_14").toPath())) {
             RockGrid grid = new RockGrid();
             inputLines.forEachOrdered(grid::addRow);
             grid.rollAllRocks(Direction.north);

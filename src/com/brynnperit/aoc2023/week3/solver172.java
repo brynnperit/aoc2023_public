@@ -416,7 +416,7 @@ public class solver172 {
 
     public static void main(String[] args) {
         long lowestElapsedCost = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_17").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week3/input_17").toPath())) {
             City city = new City();
             inputLines.forEachOrdered(line -> city.addRow(line));
             Path shortestPath = city.getShortestPath(new Coord2D(0, 0),

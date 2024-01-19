@@ -147,7 +147,7 @@ public class solver152 {
 
     public static void main(String[] args) {
         long lensPower = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_15").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week3/input_15").toPath())) {
             List<SequenceStep> allSteps = inputLines.map(line -> getSteps(line)).collect(Collectors.toList()).get(0);
             Map<Integer, List<Lens>> lensBoxes = new TreeMap<>();
             allSteps.stream().forEachOrdered(step -> step.actOnBox(lensBoxes));

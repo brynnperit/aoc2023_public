@@ -317,7 +317,7 @@ public class solver122 {
     }
     public static void main(String[] args) {
         long possibleCombinations = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_12").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_12").toPath())) {
              List<SpringRecord> allSpringRecords = inputLines.map(line -> new SpringRecord(line, true)).collect(Collectors.toList());
             // possibleCombinations = IntStream.range(1, allSpringRecords.size() + 1).mapToLong(i -> {
             //     System.out.print(String.format("%d ", i));

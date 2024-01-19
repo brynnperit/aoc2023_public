@@ -270,7 +270,7 @@ public class solver112 {
 
     public static void main(String[] args) {
         long galaxyDistanceSum = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_11").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_11").toPath())) {
             GalaxyMap map = new GalaxyMap();
             int numberOfGalaxies = inputLines.map(map::addGalaxyRowFromTextLine).mapToInt(list -> list.size()).sum();
             LongStream startRanges = LongStream.range(0, numberOfGalaxies);

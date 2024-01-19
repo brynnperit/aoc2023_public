@@ -452,7 +452,7 @@ public class solver162 {
 
     public static void main(String[] args) {
         long energizedCount = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_16").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week3/input_16").toPath())) {
             ContraptionGridBuilder builder = new ContraptionGridBuilder();
             inputLines.forEachOrdered(line -> builder.addRow(line));
             ContraptionGridBuilder.ContraptionGrid grid = builder.finalizeGrid();

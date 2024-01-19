@@ -174,7 +174,7 @@ public class solver082 {
 
     public static void main(String[] args) {
         long totalSteps = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_08").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_08").toPath())) {
             inputLines.forEach(solver082::processInputLine);
             //System.out.println("There are " + instructionList.size() + " instructions");
             long totalLoops = 0;

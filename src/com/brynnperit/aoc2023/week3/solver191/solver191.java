@@ -7,7 +7,7 @@ import java.util.stream.*;
 public class solver191 {
     public static void main(String[] args) {
         long totalRatings = -1;
-        try (Stream<String> lines = Files.lines(new File("inputs/input_19").toPath())) {
+        try (Stream<String> lines = Files.lines(new File("inputs/week3/input_19").toPath())) {
             WorkflowCollection flowCollection = new WorkflowCollection();
             List<String> allLines = lines.toList();
             List<Part> partList = allLines.stream().map(line->Part.GetPart(line)).filter(optional->optional.isPresent()).map(optional->optional.get()).toList();

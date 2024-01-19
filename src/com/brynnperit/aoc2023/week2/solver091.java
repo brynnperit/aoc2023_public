@@ -50,7 +50,7 @@ public class solver091 {
 
     public static void main(String[] args) {
         long totalPredictions = -1;
-        try(Stream<String> inputLines = Files.lines(new File("inputs/input_09").toPath())){
+        try(Stream<String> inputLines = Files.lines(new File("inputs/week2/input_09").toPath())){
             List<List<List<Long>>> allDifferences = inputLines.map(solver091::getNumbersFromLine).map(solver091::getDifferencesUntilZeros).collect(Collectors.toList());
             allDifferences.forEach(listList->extendDifferenceListsByOne(listList));
             totalPredictions = allDifferences.stream().map(listList->listList.get(0)).mapToLong(firstList->firstList.get(firstList.size()-1)).sum();

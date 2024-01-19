@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public class solver042 {
 
     public static void main(String[] args) {
         int total = 0;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_04").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_04").toPath())) {
             inputLines.forEachOrdered(solver042::calculateCardCopies);
             total = cardCopies.stream().mapToInt(i->i).sum();
 

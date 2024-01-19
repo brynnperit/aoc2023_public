@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,14 +10,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class solver072 {
+public class solver071 {
     private static Pattern numberPattern = Pattern.compile("([0-9]+)$");
     private static Pattern handPattern = Pattern.compile("[23456789TJQKA]{5}");
     private static Pattern cardPattern = Pattern.compile("[23456789TJQKA]");
     private static Set<CardHand> hands = new TreeSet<>();
 
     private enum Card {
-        cJ,
         c2,
         c3,
         c4,
@@ -27,6 +26,7 @@ public class solver072 {
         c8,
         c9,
         cT,
+        cJ,
         cQ,
         cK,
         cA;
@@ -42,82 +42,40 @@ public class solver072 {
     private enum CardHandType {
         HighCard {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                return cardCounts.keySet().size() == 5 && !cardCounts.containsKey(Card.cJ);
+                return cardCounts.keySet().size() == 5;
             }
         },
         OnePair {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                boolean onePairNoJs = cardCounts.keySet().size() == 4 && !cardCounts.containsKey(Card.cJ);
-                boolean onePairOneJ = cardCounts.keySet().size() == 5 && cardCounts.containsKey(Card.cJ);
-                return onePairNoJs || onePairOneJ;
+                return cardCounts.keySet().size() == 4;
             }
         },
         TwoPair {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                int maxCardCount = cardCounts.values().stream().mapToInt(i -> i).max().getAsInt();
-                // Can't get two pairs with jokers as they'd just become ThreeOfAKind or higher
-                // instead
-                boolean hasTwoPairsNoJs = maxCardCount == 2 && cardCounts.keySet().size() == 3
-                        && !cardCounts.containsKey(Card.cJ);
-                return hasTwoPairsNoJs;
+                return cardCounts.values().stream().mapToInt(i -> i).max().getAsInt() == 2
+                        && cardCounts.keySet().size() == 3;
             }
         },
         ThreeOfAKind {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                int maxCardCount = cardCounts.values().stream().mapToInt(i -> i).max().getAsInt();
-                boolean threeOfAKindNoJs = maxCardCount == 3
-                        && cardCounts.keySet().size() == 3 && !cardCounts.containsKey(Card.cJ);
-                // 2234J
-                boolean threeOfAKindOneJ = cardCounts.keySet().size() == 4 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 1;
-                // 234JJ
-                boolean threeOfAKindTwoJs = cardCounts.keySet().size() == 4 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 2;
-                return threeOfAKindNoJs || threeOfAKindOneJ || threeOfAKindTwoJs;
+                return cardCounts.values().stream().mapToInt(i -> i).max().getAsInt() == 3
+                        && cardCounts.keySet().size() == 3;
             }
         },
         FullHouse {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                int maxCardCount = cardCounts.values().stream().mapToInt(i -> i).max().getAsInt();
-                boolean fullHouseNoJs = maxCardCount == 3
-                        && cardCounts.keySet().size() == 2 && !cardCounts.containsKey(Card.cJ);
-                // 2233J
-                boolean fullHouseOneJ = maxCardCount == 2 && cardCounts.keySet().size() == 3
-                        && cardCounts.containsKey(Card.cJ) && cardCounts.get(Card.cJ) == 1;
-                return fullHouseNoJs || fullHouseOneJ;
+                return cardCounts.values().stream().mapToInt(i -> i).max().getAsInt() == 3
+                        && cardCounts.keySet().size() == 2;
             }
         },
         FourOfAKind {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                int maxCardCount = cardCounts.values().stream().mapToInt(i -> i).max().getAsInt();
-                boolean fourOfAKindNoJs = maxCardCount == 4 && !cardCounts.containsKey(Card.cJ);
-                boolean fourOfAKindOneJ = maxCardCount == 3
-                        && cardCounts.keySet().size() == 3 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 1;
-                boolean fourOfAKindTwoJs = maxCardCount == 2 && cardCounts.keySet().size() == 3
-                        && cardCounts.containsKey(Card.cJ) && cardCounts.get(Card.cJ) == 2;
-                boolean fourOfAKindThreeJs = maxCardCount == 3
-                        && cardCounts.keySet().size() == 3 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 3;
-                return fourOfAKindNoJs || fourOfAKindOneJ || fourOfAKindTwoJs || fourOfAKindThreeJs;
+                return cardCounts.values().stream().mapToInt(i -> i).max().getAsInt() == 4;
             }
         },
         FiveOfAKind {
             protected boolean handMatchesType(Map<Card, Integer> cardCounts) {
-                int maxCardCount = cardCounts.values().stream().mapToInt(i -> i).max().getAsInt();
-                boolean fiveOfAKindJsOrNot = cardCounts.keySet().size() == 1;
-                boolean fiveOfAKindOneJ = maxCardCount == 4 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 1;
-                boolean fiveOfAKindTwoJs = maxCardCount == 3
-                        && cardCounts.keySet().size() == 2 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 2;
-                boolean fiveOfAKindThreeJs = maxCardCount == 3
-                        && cardCounts.keySet().size() == 2 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 3;
-                boolean fiveOfAKindFourJs = maxCardCount == 4 && cardCounts.containsKey(Card.cJ)
-                        && cardCounts.get(Card.cJ) == 4;
-                return fiveOfAKindJsOrNot || fiveOfAKindOneJ || fiveOfAKindTwoJs || fiveOfAKindThreeJs
-                        || fiveOfAKindFourJs;
+                return cardCounts.keySet().size() == 1;
             }
         };
 
@@ -155,7 +113,6 @@ public class solver072 {
                 }
             }
             this.cardHandType = CardHandType.getCardHandType(this).get();
-
         }
 
         public CardHand(List<Card> cards, long bid) {
@@ -194,8 +151,8 @@ public class solver072 {
 
     public static void main(String[] args) {
         long totalWinnings = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_07").toPath())) {
-            inputLines.forEach(solver072::processInputLine);
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_07").toPath())) {
+            inputLines.forEach(solver071::processInputLine);
             List<CardHand> CardHandsInOrder = hands.stream().toList();
             totalWinnings = IntStream.range(1, CardHandsInOrder.size() + 1)
                     .mapToObj(i -> new rankAndBid(i, CardHandsInOrder.get(i - 1).bid())).mapToLong(r -> r.bid * r.rank)

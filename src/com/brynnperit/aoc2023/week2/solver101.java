@@ -349,7 +349,7 @@ public class solver101 {
 
     public static void main(String[] args) {
         long distanceToFarthestPoint = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_10").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_10").toPath())) {
             List<List<TilePath>> tileGrid = new ArrayList<>();
             inputLines.forEachOrdered(line -> processInput(line, tileGrid));
             fillInStartTile(tileGrid);

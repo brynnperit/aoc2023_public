@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class solver041 {
 
     public static void main(String[] args) {
         long total = 0;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_04").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_04").toPath())) {
             // The "1L << i-1" raises 2 to the i-1; if i is 1 you get 1, if i is 2 you get
             // 2, if i is 3 you get 4, if i is 4 you get 8
             total = inputLines.mapToInt(solver041::countWinningNumbers).mapToLong(i -> i > 0 ? 1L << i - 1 : 0).sum();

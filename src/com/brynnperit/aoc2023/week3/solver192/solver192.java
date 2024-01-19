@@ -9,7 +9,7 @@ import java.util.stream.*;
 public class solver192 {
     public static void main(String[] args) {
         long totalDistinctParts = -1;
-        try (Stream<String> lines = Files.lines(new File("inputs/input_19").toPath())) {
+        try (Stream<String> lines = Files.lines(new File("inputs/week3/input_19").toPath())) {
             WorkflowCollection flowCollection = new WorkflowCollection();
             lines.forEach(line -> flowCollection.addWorkflow(line));
             List<PartRanges> partRangeList = flowCollection.getRanges();

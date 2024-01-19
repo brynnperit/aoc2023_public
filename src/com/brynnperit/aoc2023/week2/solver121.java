@@ -265,7 +265,7 @@ public class solver121 {
 
     public static void main(String[] args) {
         int possibleCombinations = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_12").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_12").toPath())) {
             // // These lines send output to a file for debugging
             // StringBuffer outputSB = new StringBuffer();
             // List<SpringRecord> allRecords = inputLines.map(line -> new

@@ -195,7 +195,7 @@ public class solver131 {
 
     public static void main(String[] args) {
         long summaryNumber = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_13").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_13").toPath())) {
             inputLines.forEachOrdered(line -> processLine(line));
             List<Integer> rowResults = ashRockFields.stream().map(field -> field.getFirstMirrorRow()).toList();
             List<Integer> columnResults = ashRockFields.stream().map(field -> field.getFirstMirrorColumn()).toList();

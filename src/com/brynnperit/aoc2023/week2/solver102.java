@@ -653,7 +653,7 @@ public class solver102 {
 
     public static void main(String[] args) {
         long insideTileCount = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_10").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_10").toPath())) {
             List<List<TilePath>> tilePathGrid = new ArrayList<>();
             List<List<Tile>> tileGrid = new ArrayList<>();
             inputLines.forEachOrdered(line -> processInput(line, tilePathGrid, tileGrid));

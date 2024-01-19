@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class solver022 {
     public static void main(String[] args) {
 
         int total = 0;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_02").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_02").toPath())) {
             total = inputLines.mapToInt(solver022::toPowerSetFunction).sum();
         } catch (IOException e) {
             e.printStackTrace();

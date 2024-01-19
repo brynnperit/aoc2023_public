@@ -123,7 +123,7 @@ public class solver081 {
 
     public static void main(String[] args) {
         long totalSteps = 0;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_08").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_08").toPath())) {
             inputLines.forEach(solver081::processInputLine);
             Node currentNode = startNode;
             while (currentNode != endNode) {

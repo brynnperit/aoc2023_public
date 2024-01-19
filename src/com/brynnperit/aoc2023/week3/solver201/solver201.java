@@ -11,7 +11,7 @@ public class solver201 {
     public static void main(String[] args) {
         Map<PulseType, Long> counts = new HashMap<>();
         long firstRx = -1;
-        try (Stream<String> lines = Files.lines(new File("inputs/input_20").toPath())) {
+        try (Stream<String> lines = Files.lines(new File("inputs/week3/input_20").toPath())) {
             ModuleCollection modules = new ModuleCollection();
             lines.forEach(l -> modules.addModule(l));
             modules.setPrint(false);

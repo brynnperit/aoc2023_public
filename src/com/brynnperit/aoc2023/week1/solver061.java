@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,19 +10,19 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class solver062 {
+public class solver061 {
     private static Pattern numberPattern = Pattern.compile("([0-9]+)");
     private static Pattern timeStartLine = Pattern.compile("Time:");
     // private static Pattern distanceStartLine = Pattern.compile("Distance:");
 
-    private record RaceStat(long time, long distance) {
+    private record RaceStat(int time, int distance) {
     };
 
     private record WinningRange(long lowestHoldDuration, long highestHoldDuration) {
     };
 
-    private static List<Long> times = new ArrayList<>();
-    private static List<Long> distances = new ArrayList<>();
+    private static List<Integer> times = new ArrayList<>();
+    private static List<Integer> distances = new ArrayList<>();
 
     private static void processInputLine(String line) {
         // Matcher distanceStartLineMatcher = distanceStartLine.matcher(line);
@@ -32,14 +32,12 @@ public class solver062 {
         if (timeStartLineMatcher.find()) {
             isTimeLine = true;
         }
-        StringBuilder numberCombiner = new StringBuilder();
         while (numberPatternMatcher.find()) {
-            numberCombiner.append(numberPatternMatcher.group());
-        }
-        if (isTimeLine) {
-            times.add(Long.parseLong(numberCombiner.toString()));
-        } else {
-            distances.add(Long.parseLong(numberCombiner.toString()));
+            if (isTimeLine) {
+                times.add(Integer.parseInt(numberPatternMatcher.group()));
+            } else {
+                distances.add(Integer.parseInt(numberPatternMatcher.group()));
+            }
         }
     }
 
@@ -59,8 +57,8 @@ public class solver062 {
         // can be solved.
         double aPart = -1;
         double bPart = race.time();
-        // Add 1 to the race distance here because we must go further than it to win.
-        double cPart = -1 * (race.distance() + 1);
+        //Add 1 to the race distance here because we must go further than it to win.
+        double cPart = -1 * (race.distance()+1);
         double determinant = Math.pow(bPart, 2) - 4 * aPart * cPart;
         double lowRoot, highRoot;
         if (determinant >= 0) {
@@ -80,8 +78,8 @@ public class solver062 {
 
     public static void main(String[] args) {
         long raceWinningPermutations = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_06").toPath())) {
-            inputLines.forEach(solver062::processInputLine);
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_061_test").toPath())) {
+            inputLines.forEach(solver061::processInputLine);
             List<RaceStat> races = IntStream.range(0, Math.min(times.size(), distances.size()))
                     .mapToObj(i -> new RaceStat(times.get(i), distances.get(i)))
                     .collect(Collectors.toCollection(ArrayList::new));

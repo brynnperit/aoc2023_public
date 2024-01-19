@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,16 +19,7 @@ public class solver011 {
      * This isn't actually needed or used!
      */
     private static enum digits {
-        one(1),
-        two(2),
-        three(3),
-        four(4),
-        five(5),
-        six(6),
-        seven(7),
-        eight(8),
-        nine(9),
-        zero(0);
+        one(1), two(2), three(3), four(4), five(5), six(6), seven(7), eight(8), nine(9), zero(0);
 
         private final int digit;
 
@@ -69,8 +60,7 @@ public class solver011 {
 
     public static void main(String[] args) {
         int total = 0;
-
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_01").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_01").toPath())) {
             total = inputLines.mapToInt(solver011::processorFunction).sum();
         } catch (IOException e) {
             e.printStackTrace();

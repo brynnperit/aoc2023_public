@@ -256,7 +256,7 @@ public class solver142 {
 
     public static void main(String[] args) {
         long totalLoad = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_14").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week2/input_14").toPath())) {
             RockGrid grid = new RockGrid();
             inputLines.forEachOrdered(grid::addRow);
             List<Set<Coord2D>> rockCoords = new ArrayList<>();

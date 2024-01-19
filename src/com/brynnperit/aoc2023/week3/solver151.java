@@ -39,7 +39,7 @@ public class solver151 {
 
     public static void main(String[] args) {
         long hashTotal = -1;
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_15").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week3/input_15").toPath())) {
             List<SequenceStep> allSteps = inputLines.map(line -> getSteps(line)).collect(Collectors.toList()).get(0);
             hashTotal = allSteps.stream().mapToInt(step->step.hashCode()).sum();
         } catch (IOException e) {

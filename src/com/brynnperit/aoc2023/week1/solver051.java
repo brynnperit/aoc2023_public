@@ -1,4 +1,4 @@
-package com.brynnperit.aoc2023;
+package com.brynnperit.aoc2023.week1;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class solver051 {
     public static void main(String[] args) {
         long lowestLocationNumber = -2;
         //Need data structure that returns the next lowest number to the one being searched for
-        try (Stream<String> inputLines = Files.lines(new File("inputs/input_05").toPath())) {
+        try (Stream<String> inputLines = Files.lines(new File("inputs/week1/input_05").toPath())) {
             inputLines.forEachOrdered(solver051::processInputLine);
             lowestLocationNumber = seeds.stream().mapToLong(solver051::findLocationNumberForSeed).reduce(Long.MAX_VALUE, (first,second)->first < second ? first : second);
 
