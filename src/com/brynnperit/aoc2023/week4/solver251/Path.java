@@ -2,10 +2,10 @@ package com.brynnperit.aoc2023.week4.solver251;
 
 import java.util.*;
 
-public record Path(List<Node> visitedNodes, HashSet<Edge> traversedEdges,Set<Node> forbiddenNodes) {
+public record Path(List<Node> visitedNodes, List<Edge> traversedEdges) {
 
     public Path(Path other){
-        this(new ArrayList<>(other.visitedNodes), new HashSet<>(other.traversedEdges),other.forbiddenNodes);
+        this(new ArrayList<>(other.visitedNodes), new ArrayList<>(other.traversedEdges));
     }
 
     public Node currentNode(){

@@ -11,7 +11,10 @@ public class solver251 {
         try(Stream<String> lines = Files.lines(new File("inputs/week4/input_25").toPath())){
             Graph graph = new Graph();
             lines.forEach(l->graph.add(l));
+            // long timeBefore = System.nanoTime();
             List<Graph> distinctGroups =  graph.findTwoDistinctGroupsByEdgeRemoval(3);
+            // long timeAfter = System.nanoTime();
+            // System.out.printf("Before: %d, After: %d, Elapsed: %dms%n",timeBefore,timeAfter,(timeAfter-timeBefore)/1000000);
             groupSizesMultiplied=distinctGroups.stream().mapToInt(g->g.nodeCount()).reduce((g1,g2)->g1*g2).orElse(-1);
         }catch(IOException e){
             e.printStackTrace();

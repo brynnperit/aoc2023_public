@@ -55,14 +55,18 @@ public class Graph {
     public List<Graph> findTwoDistinctGroupsByEdgeRemoval(int edgesToRemove) {
         List<Node> nodesWithEnoughEdges = nodesByString.values().stream().filter(n -> n.connectedNodes().size() > edgesToRemove).toList();
         ListIterator<Node> firstNodeIterator = nodesWithEnoughEdges.listIterator();
-        Set<Edge> commonEdges = new HashSet<>(edges);
-        while (firstNodeIterator.hasNext() && commonEdges.size() > edgesToRemove) {
+        Set<Edge> commonEdges = null;
+        while (firstNodeIterator.hasNext() && commonEdges == null) {
             Node firstNode = firstNodeIterator.next();
             if (firstNodeIterator.hasNext()) {
                 ListIterator<Node> secondNodeIterator = nodesWithEnoughEdges.listIterator(firstNodeIterator.nextIndex());
                 while (secondNodeIterator.hasNext()) {
                     Node secondNode = secondNodeIterator.next();
-                    firstNode.getShortestDistinctPathsToOtherNode(secondNode, edgesToRemove).ifPresent(l -> addCommonEdges(l, commonEdges));
+                    Optional<List<List<Edge>>> paths = firstNode.getShortestDistinctPathsToOtherNode(secondNode, edgesToRemove);
+                    if (paths.isPresent()){
+                        commonEdges = Node.findBottlenecks(paths.get());
+                        break;
+                    }
                 }
             }
         }
@@ -75,24 +79,6 @@ public class Graph {
         Collection<Node> secondConnectedNodes = secondRemovalNode.allConnectedNodes();
         secondGraph.removeAll(secondConnectedNodes);
         return List.of(firstGraph, secondGraph);
-    }
-
-    private void addCommonEdges(List<Set<Edge>> edgeLists, Set<Edge> commonEdges) {
-        List<Edge> removeList = new ArrayList<>();
-        for (Edge edge : commonEdges) {
-            boolean isPresent = false;
-            for (Set<Edge> set : edgeLists) {
-                if (set.contains(edge)) {
-                    isPresent = true;
-                }
-            }
-            if (!isPresent) {
-                removeList.add(edge);
-            }
-        }
-        for (Edge edge : removeList) {
-            commonEdges.remove(edge);
-        }
     }
 
     public int nodeCount() {

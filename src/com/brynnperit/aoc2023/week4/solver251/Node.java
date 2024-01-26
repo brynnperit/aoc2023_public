@@ -17,7 +17,7 @@ public class Node {
 
     public void addEdge(Edge edge) {
         edges.add(edge);
-        connectedNodes.put(edge.getOther(this), edge);
+        connectedNodes.put(edge.getOther(this).get(), edge);
     }
 
     public Edge getEdge(Node connectedNode) {
@@ -44,17 +44,12 @@ public class Node {
         }
     }
 
-    public Optional<List<Set<Edge>>> getShortestDistinctPathsToOtherNode(Node destinationNode, int numberOfPaths) {
-        List<Set<Edge>> shortestDistinctPaths = new ArrayList<>();
-        PriorityQueue<Path> pathQueue = new PriorityQueue<>((p1, p2) -> Integer.compare(p1.length(), p2.length()));
+    public Optional<List<List<Edge>>> getShortestDistinctPathsToOtherNode(Node destinationNode, int numberOfPaths) {
+        List<List<Edge>> shortestDistinctPaths = new ArrayList<>();
+
         Set<Edge> forbiddenEdges = new HashSet<>();
-        Set<Node> forbiddenNodes = new HashSet<>();
         while (true) {
-            pathQueue.clear();
-            forbiddenNodes.clear();
-            Path initialPath = new Path(List.of(this), new HashSet<>(), forbiddenNodes);
-            pathQueue.add(initialPath);
-            Path shortestPath = getShortestPath(destinationNode, pathQueue, forbiddenEdges, forbiddenNodes);
+            Path shortestPath = getShortestPath(this, destinationNode, forbiddenEdges).orElse(null);
             if (shortestPath == null) {
                 break;
             } else if (shortestDistinctPaths.size() == numberOfPaths) {
@@ -70,7 +65,11 @@ public class Node {
         return Optional.empty();
     }
 
-    private Path getShortestPath(Node destinationNode, PriorityQueue<Path> pathQueue, Set<Edge> forbiddenEdges, Set<Node> forbiddenNodes) {
+    private static Optional<Path> getShortestPath(Node startNode, Node destinationNode, Set<Edge> forbiddenEdges) {
+        PriorityQueue<Path> pathQueue = new PriorityQueue<>((p1, p2) -> Integer.compare(p1.length(), p2.length()));
+        Path initialPath = new Path(List.of(startNode), List.of());
+        pathQueue.add(initialPath);
+        Set<Node> forbiddenNodes = new HashSet<>();
         Path shortestPath = null;
         while (!pathQueue.isEmpty()) {
             Path currentPath = pathQueue.poll();
@@ -92,7 +91,7 @@ public class Node {
                 }
             }
         }
-        return shortestPath;
+        return Optional.ofNullable(shortestPath);
     }
 
     @Override
@@ -109,5 +108,45 @@ public class Node {
 
     public Set<Edge> edges() {
         return Collections.unmodifiableSet(edges);
+    }
+
+    public static Set<Edge> findBottlenecks(List<List<Edge>> edgeLists) {
+        Set<Edge> bottleNecks = new HashSet<>();
+        Set<Edge> lockedEdgesAll = new HashSet<>();
+        for (List<Edge> list : edgeLists) {
+            lockedEdgesAll.addAll(list);
+        }
+        for (List<Edge> list : edgeLists) {
+            Set<Edge> lockedEdgesThis = new HashSet<>(lockedEdgesAll);
+            lockedEdgesThis.removeAll(list);
+            bottleNecks.add(findBottleneck(list, lockedEdgesThis));
+        }
+        return bottleNecks;
+    }
+
+    private static Edge findBottleneck(List<Edge> possibleBottlenecks, Set<Edge> lockedEdges) {
+        List<Edge> remainingEdges = new ArrayList<>(possibleBottlenecks);
+        Edge lastEdge = remainingEdges.remove(remainingEdges.size() - 1);
+        Edge previousEdge = remainingEdges.remove(remainingEdges.size() - 1);
+        Optional<Node> optDestination = lastEdge.getOther(previousEdge.firstNode());
+        if (optDestination.isEmpty()){
+            optDestination = lastEdge.getOther(previousEdge.secondNode());
+        }
+        Node destination = optDestination.get();
+        Node startNode = lastEdge.getOther(destination).get();
+        while (remainingEdges.size() >= 0) {
+            lockedEdges.add(lastEdge);
+            Optional<Path> hasPath = getShortestPath(startNode, destination, lockedEdges);
+            if (hasPath.isEmpty()) {
+                return lastEdge;
+            }
+            lockedEdges.remove(lastEdge);
+            if (remainingEdges.size() > 0) {
+                startNode = previousEdge.getOther(startNode).get();
+                lastEdge = previousEdge;
+                previousEdge = remainingEdges.remove(remainingEdges.size() - 1);
+            }
+        }
+        throw new IllegalArgumentException();
     }
 }

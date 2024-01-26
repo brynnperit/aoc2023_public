@@ -1,16 +1,16 @@
 package com.brynnperit.aoc2023.week4.solver251;
 
-import java.lang.IllegalArgumentException;
+import java.util.*;
 
 public record Edge(Node firstNode, Node secondNode) {
 
-    public Node getOther(Node graphNode) {
+    public Optional<Node> getOther(Node graphNode) {
         if (firstNode.equals(graphNode)){
-            return secondNode;
+            return Optional.of(secondNode);
         }else if (secondNode.equals(graphNode)){
-            return firstNode;
+            return Optional.of(firstNode);
         }
-        throw new IllegalArgumentException();
+        return Optional.empty();
     }
 
     @Override
