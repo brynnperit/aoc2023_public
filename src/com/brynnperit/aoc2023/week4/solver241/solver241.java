@@ -10,10 +10,10 @@ import java.math.BigDecimal;
 public class solver241 {
 
     public static void main(String[] args) {
-        final long minCoordinate = 7;
-        // final long minCoordinate = 200000000000000L;
-        final long maxCoordinate = 27;
-        // final long maxCoordinate = 400000000000000L;
+        // final long minCoordinate = 7;
+        final long minCoordinate = 200000000000000L;
+        // final long maxCoordinate = 27;
+        final long maxCoordinate = 400000000000000L;
         long intersectionsWithinTestArea = -1;
         long addedPositionCoordinatesOfInterceptingLine = -1;
         try (Stream<String> lines = Files.lines(new File("inputs/week4/input_24").toPath())) {
@@ -73,110 +73,7 @@ public class solver241 {
 
 
         Line3D bestInterceptingLine = new Line3D(position, velocity);//extracted(first, second, third).orElse(extracted(second, first, third).get());
-        BigDecimal firstIntersection = bestInterceptingLine.closestIntersection(first);
-        BigDecimal secondIntersection = bestInterceptingLine.closestIntersection(second);
-        BigDecimal thirdIntersection = bestInterceptingLine.closestIntersection(third);
-        BigDecimal firstIntersectionTimeCheck = bestInterceptingLine.getIntersection(first).interceptTimeSecond();
-        BigDecimal secondIntersectionTimeCheck = bestInterceptingLine.getIntersection(second).interceptTimeSecond();
-        BigDecimal thirdIntersectionTimeCheck = bestInterceptingLine.getIntersection(third).interceptTimeSecond();
 
         return bestInterceptingLine;
-    }
-
-    //Look at this fancy idea that didn't work at all!
-    private static Optional<Line3D> lineGetter(Line3D first, Line3D second, Line3D third) {
-        boolean foundValidLine = false;
-        long timeBetweenIntercepts = 1;
-        long timeJumpValue = 32767;
-        long lowerWindow = 1;
-        long upperWindow = Long.MAX_VALUE;
-        long bestInterceptTimeDelta = Long.MAX_VALUE;
-        boolean increasingJumps = true;
-        while (!foundValidLine) {
-            if (lowerWindow >= upperWindow) {
-                System.out.println("window closed, break");
-                break;
-            }
-            Line3D newInterceptingLine = getBestInterceptingLine(first, second, third, timeBetweenIntercepts);
-            BigDecimal interceptDistance = newInterceptingLine.closestIntersection(third);
-            double doubleInterceptDistance = interceptDistance.doubleValue();
-            if (doubleInterceptDistance < 0.1) {// interceptDistance.compareTo(BigDecimal.ZERO) == 0) {
-                IntersectionResult result = newInterceptingLine.getIntersection(third, false);
-                long interceptTimeDelta = Math.abs(result.interceptTimeFirst().longValue() - result.interceptTimeSecond().longValue());
-                if (result.interceptTimeFirst().compareTo(result.interceptTimeSecond()) == 0) {// &&!bestInterceptingLine.velocity.containsFractions()) {
-                    return Optional.of(newInterceptingLine);
-                } else if (interceptTimeDelta <= bestInterceptTimeDelta) {
-                    bestInterceptTimeDelta = interceptTimeDelta;
-                    if (increasingJumps) {
-                        timeJumpValue *= 2;
-                    }
-                    lowerWindow = timeBetweenIntercepts;
-                    System.out.printf("Best delta: %d, current delta: %d, time: %d, lower window: %d, upper window: %d, JUMPING%n", bestInterceptTimeDelta, interceptTimeDelta, timeBetweenIntercepts, lowerWindow, upperWindow);
-                    timeBetweenIntercepts += timeJumpValue;
-
-                } else {
-                    // Went too far, revert to lower window with half the jump value
-                    if (increasingJumps) {
-                        increasingJumps = false;
-                    }
-                    upperWindow = Math.min(upperWindow-1, timeBetweenIntercepts-1);
-                    timeBetweenIntercepts = lowerWindow;
-                    timeJumpValue /= 2;
-                    System.out.printf("Best delta: %d, current delta: %d, time: %d, lower window: %d, upper window: %d, REVERTING%n", bestInterceptTimeDelta, interceptTimeDelta, timeBetweenIntercepts, lowerWindow, upperWindow);
-                }
-            }else{
-                timeBetweenIntercepts++;
-            }
-            
-
-        }
-        return Optional.empty();
-    }
-
-    private static Line3D getBestInterceptingLine(Line3D first, Line3D second, Line3D third, long timeBetweenIntercepts) {
-        long timeBeforeFirstIntercept = 0;
-        boolean inExpandingJumpPhase = true;
-        long jumpValue = 1;
-        Line3D bestInterceptingLine;
-        BigDecimal interceptDistanceToThird;
-        while (true) {
-            Line3D lowerInterceptLine = getInterceptingLine(first, second, timeBeforeFirstIntercept, timeBetweenIntercepts);
-            Line3D higherInterceptLine = getInterceptingLine(first, second, timeBeforeFirstIntercept + 1, timeBetweenIntercepts);
-            BigDecimal lowerInterceptDistance = lowerInterceptLine.closestIntersection(third);
-            BigDecimal higherInterceptDistance = higherInterceptLine.closestIntersection(third);
-            boolean bestLineIsHigher = higherInterceptDistance.compareTo(lowerInterceptDistance) <= 0;
-            if (bestLineIsHigher) {
-                bestInterceptingLine = higherInterceptLine;
-                interceptDistanceToThird = higherInterceptDistance;
-                // If the best intercept is with time 64, this will test
-                // 0,1->2,3->6,7->14,15->30,31->62,63->126,127->94,95->78,79->70,71->66,67->64,65
-                if (inExpandingJumpPhase) {
-                    jumpValue *= 2;
-                } else {
-                    jumpValue /= 2;
-                }
-                timeBeforeFirstIntercept += jumpValue;
-            } else {
-                bestInterceptingLine = lowerInterceptLine;
-                interceptDistanceToThird = lowerInterceptDistance;
-                inExpandingJumpPhase = false;
-                jumpValue /= 2;
-                timeBeforeFirstIntercept -= jumpValue;
-            }
-            if (interceptDistanceToThird.compareTo(BigDecimal.ZERO) == 0 || jumpValue == 0) {
-                break;
-            }
-        }
-        return bestInterceptingLine;
-    }
-
-    private static Line3D getInterceptingLine(Line3D first, Line3D second, long timeBeforeFirstIntercept, long timeBetweenIntercepts) {
-        long secondInterceptTime = timeBeforeFirstIntercept + timeBetweenIntercepts;
-        Vector3D firstAtTime = first.positionAtTime(timeBeforeFirstIntercept);
-        Vector3D secondAtTime = second.positionAtTime(secondInterceptTime);
-        Vector3D interceptingVelocity = secondAtTime.subtract(firstAtTime).divide(timeBetweenIntercepts);
-        Vector3D interceptingPosition = firstAtTime.subtract(interceptingVelocity.multiply(timeBeforeFirstIntercept));
-        Line3D interceptingLine = new Line3D(interceptingPosition, interceptingVelocity);
-        return interceptingLine;
     }
 }
